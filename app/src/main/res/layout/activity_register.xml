@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    tools:context=".RegisterActivity">
+
+    <LinearLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="40dp"
+            android:text="Create Account"
+            android:textSize="36sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Create a new account"
+            android:textSize="18sp" />
+
+
+
+        <EditText
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:hint="NAME"
+            android:inputType="textPersonName"
+            android:textSize="16sp"
+            android:padding="12dp"
+            android:drawableLeft="@drawable/perfil"/>
+
+        <EditText
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="EMAIL"
+            android:inputType="textEmailAddress"
+            android:textSize="16sp"
+            android:padding="12dp"
+            android:drawableLeft="@drawable/mensaje"/>
+
+        <EditText
+            android:id="@+id/edt_Phone"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:ems="10"
+            android:hint="PHONE"
+            android:inputType="phone"
+            android:textSize="16sp"
+            android:drawableLeft="@drawable/celular"
+            />
+        <EditText
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="PASSWORD"
+            android:inputType="textPassword"
+            android:drawableLeft="@drawable/candado"
+
+            android:textSize="16sp"
+            android:padding="12dp" />
+
+        <EditText
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="CONFIRM PASSWORD"
+            android:inputType="textPassword"
+            android:textSize="16sp"
+            android:padding="12dp"
+            android:drawableLeft="@drawable/candado" />
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="70dp"
+
+            android:backgroundTint="#16DE0F"
+            android:padding="12dp"
+            android:text="CREATE ACCOUNT" />
+        <TextView
+            android:id="@+id/tv_register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Already have a account?login"
+            android:textSize="23sp"
+            android:layout_marginTop="30dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
