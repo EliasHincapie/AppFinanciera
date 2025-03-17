@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppFinanciera"
         tools:targetApi="31">
+
         <activity
             android:name=".RegisterActivity"
             android:exported="false" />
