@@ -1,49 +1,39 @@
 package com.example.appfinanciera;
 
-
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import android.os.Handler;
 import androidx.appcompat.app.AppCompatActivity;
 
-    public class MainActivity extends AppCompatActivity {
-        private TextView tvWelcome;
-        private Button btnLogout;
-        SharedPreferences sharedPreferences;
+public class MainActivity extends AppCompatActivity {
+    private static final int SPLASH_DURATION = 2000; // 2 segundos
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_main);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main); // Archivo XML del splash
 
-            tvWelcome = findViewById(R.id.tv_welcome);
-            btnLogout = findViewById(R.id.btn_logout);
-            sharedPreferences = getSharedPreferences("UserSession", Context.MODE_PRIVATE);
+        new Handler().postDelayed(() -> {
+            try {
+                SharedPreferences sharedPreferences = getSharedPreferences("UserSession", Context.MODE_PRIVATE);
+                boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
 
-            String userPhone = sharedPreferences.getString("phone", "");
-            tvWelcome.setText("Bienvenido, " + userPhone);
-
-            btnLogout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    logoutUser();
+                // Verificar si el usuario ha iniciado sesión
+                Intent intent;
+                if (isLoggedIn) {
+                    intent = new Intent(MainActivity.this, HomeActivity.class); // Si está logueado, ir al Home
+                } else {
+                    intent = new Intent(MainActivity.this, LoginActivity2.class); // Si no, ir al Login
                 }
-            });
-        }
 
-        private void logoutUser() {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.clear();
-            editor.apply();
-
-            Intent intent = new Intent(MainActivity.this, LoginActivity2.class);
-            startActivity(intent);
-            finish();
-        }
+                startActivity(intent);
+                finish(); // Cierra el splash
+            } catch (Exception e) {
+                e.printStackTrace(); // Imprimir el error en Logcat
+            }
+        }, SPLASH_DURATION);
     }
+}
 
