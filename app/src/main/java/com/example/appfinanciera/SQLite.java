@@ -24,7 +24,7 @@ public class SQLite extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE usuarios (" + "email TEXT PRIMARY KEY, " + "name TEXT, " + "telefono INTEGER UNIQUE, " +  "cc INTEGER UNIQUE, " + "password TEXT)");
 
-        db.execSQL("CREATE TABLE tarjetas (" + "id INTEGER PRIMARY KEY AUTOINCREMENT, " + "nombre TEXT, " + "pan TEXT, " + "exp TEXT, " + "cv TEXT, " + "bank TEXT, " + "monto INTEGER, " + "user_email TEXT, " + "FOREIGN KEY(user_email) REFERENCES usuarios(email))");
+        db.execSQL("CREATE TABLE tarjetas (" + "id INTEGER PRIMARY KEY AUTOINCREMENT, " + "nombre TEXT, " + "exp TEXT, " + "cv TEXT, " + "bank TEXT, " + "monto INTEGER, " + "user_email TEXT, " + "FOREIGN KEY(user_email) REFERENCES usuarios(email))");
 
         db.execSQL("CREATE TABLE historial (" + "id INTEGER PRIMARY KEY AUTOINCREMENT, " + "tarjeta_origen TEXT, " + "tarjeta_destino TEXT, " + "monto_enviado INTEGER, " + "fecha TEXT, " + "user_email TEXT, " + "FOREIGN KEY(user_email) REFERENCES usuarios(email))");
 
@@ -38,6 +38,8 @@ public class SQLite extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS historial");
         onCreate(db);
     }
+
+
 
     public boolean insertarUsuario(String email, String name, long telefono, long cedula, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -53,6 +55,7 @@ public class SQLite extends SQLiteOpenHelper {
         return result != -1;
     }
 
+
     public boolean verificarEmail(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM usuarios WHERE email = ?", new String[]{email});
@@ -61,6 +64,7 @@ public class SQLite extends SQLiteOpenHelper {
         db.close();
         return exists;
     }
+
 
     public boolean verificarCedula(long cedula) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -71,6 +75,7 @@ public class SQLite extends SQLiteOpenHelper {
         return exists;
     }
 
+
     public boolean verificarUsuario(String telefono, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM usuarios WHERE telefono = ? AND password = ?",
@@ -80,9 +85,12 @@ public class SQLite extends SQLiteOpenHelper {
         db.close();
         return exists;
     }
-    public String obtenerNombreUsuario(String phone) {
+
+
+    public String obtenerNombreUsuario(String telefono) {
+
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT name FROM usuarios WHERE telefono = ?", new String[]{phone});
+        Cursor cursor = db.rawQuery("SELECT name FROM usuarios WHERE telefono = ?", new String[]{telefono});
         String nombre = "";
 
         if (cursor.moveToFirst()) {
@@ -93,11 +101,14 @@ public class SQLite extends SQLiteOpenHelper {
         db.close();
         return nombre;
     }
+
+
+
     public String obtenerNombrePorTelefono(String telefono) {
         SQLiteDatabase db = this.getReadableDatabase();
         String nombre = "Usuario"; // Valor por defecto en caso de error
 
-        Cursor cursor = db.rawQuery("SELECT nombre FROM usuarios WHERE telefono = ?", new String[]{telefono});
+        Cursor cursor = db.rawQuery("SELECT name FROM usuarios WHERE telefono = ?", new String[]{telefono});
         if (cursor.moveToFirst()) {
             nombre = cursor.getString(0);
         }
@@ -105,10 +116,15 @@ public class SQLite extends SQLiteOpenHelper {
         db.close();
         return nombre;
     }
+
+
+
     public Cursor obtenerSaldoPorTelefono(String telefono) {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT saldo FROM usuarios WHERE telefono = ?", new String[]{telefono});
     }
+
+
 
     public List<ListHistory> obtenerHistorial(String userPhone) {
         List<ListHistory> historial = new ArrayList<>();
@@ -132,11 +148,12 @@ public class SQLite extends SQLiteOpenHelper {
         return historial;
     }
 
-    public boolean insertarTarjeta(String nombre, String pan, String exp, String cv, String bank, int monto, String userEmail) {
+
+
+    public boolean insertarTarjeta(String nombre,String exp, String cv, String bank, int monto, String userEmail) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("nombre", nombre);
-        values.put("pan", pan);
         values.put("exp", exp);
         values.put("cv", cv);
         values.put("bank", bank);
@@ -147,6 +164,8 @@ public class SQLite extends SQLiteOpenHelper {
         db.close();
         return result != -1;
     }
+
+
 
     public boolean insertarHistorial(String tarjetaOrigen, String tarjetaDestino, int montoEnviado, String fecha, String userEmail) {
         SQLiteDatabase db = this.getWritableDatabase();

@@ -114,4 +114,6 @@ public class CashActivity extends AppCompatActivity {
         db.insert("historial", null, values);
         db.close();
     }
+
+
 }

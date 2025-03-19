@@ -19,8 +19,10 @@ public class LoginActivity2 extends AppCompatActivity {
     SQLite databaseHelper;
     SharedPreferences sharedPreferences;
     private ImageView ojo_password;
-
     private boolean isPasswordVisible = false;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +35,14 @@ public class LoginActivity2 extends AppCompatActivity {
         tvRegister = findViewById(R.id.tv_registrar);
         ojo_password = findViewById(R.id.ojo_password);
 
-
         databaseHelper = new SQLite(this);
         sharedPreferences = getSharedPreferences("UserSession", Context.MODE_PRIVATE);
 
+        //SharedPreferences.Editor editor = sharedPreferences.edit();
+        //editor.putString("userPhone", telefonoIngresado);  // Guardar el número de teléfono
+
+        //editor.putBoolean("isLoggedIn", true);
+        //editor.apply();
         checkSession();
 
         btnLogin.setOnClickListener(v -> loginUser());
@@ -50,7 +56,9 @@ public class LoginActivity2 extends AppCompatActivity {
     }
 
     private void checkSession() {
-        String savedPhone = sharedPreferences.getString("phone", "");
+        boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
+        String savedPhone = sharedPreferences.getString("userPhone", "");
+
         if (!savedPhone.isEmpty()) {
             startActivity(new Intent(this, MainActivity.class));
             finish();
@@ -70,8 +78,9 @@ public class LoginActivity2 extends AppCompatActivity {
             String userName = databaseHelper.obtenerNombreUsuario(phone);
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("phone", phone);
-            editor.putString("name", userName);  // Guardamos el nombre del usuario
+            editor.putString("userPhone", phone);
+            editor.putString("name", userName);
+            editor.putBoolean("isLoggedIn", true); // ✅ Guardar sesión solo si es correcto
             editor.apply();
 
         Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_LONG).show();
@@ -85,9 +94,11 @@ public class LoginActivity2 extends AppCompatActivity {
         if (isPasswordVisible) {
             etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             ojo_password.setImageResource(R.drawable.ojoabierto);
+
         } else {
             etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             ojo_password.setImageResource(R.drawable.ojoabierto);
+
         }
         etPassword.setSelection(etPassword.getText().length());
         isPasswordVisible = !isPasswordVisible;

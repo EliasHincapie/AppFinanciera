@@ -5,20 +5,24 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
-    private static final int SPLASH_DURATION = 2000; // 2 segundos
+    private static final int SPLASH_DURATION = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main); // Archivo XML del splash
+        setContentView(R.layout.activity_main);
 
         new Handler().postDelayed(() -> {
             try {
                 SharedPreferences sharedPreferences = getSharedPreferences("UserSession", Context.MODE_PRIVATE);
+
+
                 boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
+
 
                 // Verificar si el usuario ha iniciado sesión
                 Intent intent;
@@ -29,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 startActivity(intent);
-                finish(); // Cierra el splash
+                finish(); // Cierra splash
             } catch (Exception e) {
                 e.printStackTrace(); // Imprimir el error en Logcat
             }
