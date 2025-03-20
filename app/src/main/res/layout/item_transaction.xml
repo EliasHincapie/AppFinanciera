@@ -4,7 +4,13 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="10dp">
-
+<LinearLayout
+    android:id="@+id/container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:layout_margin="4dp">
     <TextView
         android:id="@+id/tvMonto"
         android:layout_width="wrap_content"
@@ -19,5 +25,7 @@
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:textColor="@android:color/darker_gray"/>
-</LinearLayout>
+     </LinearLayout>
+    </LinearLayout>
+
 

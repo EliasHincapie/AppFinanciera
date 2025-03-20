@@ -22,7 +22,7 @@ public class SQLite extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE usuarios (" + "email TEXT PRIMARY KEY, " + "name TEXT, " + "telefono INTEGER UNIQUE, " +  "cc INTEGER UNIQUE, " + "password TEXT)");
+        db.execSQL("CREATE TABLE usuarios (" + "email TEXT PRIMARY KEY, " + "name TEXT, " + "telefono INTEGER UNIQUE, " +  "cc INTEGER UNIQUE, " + "password TEXT,"+"saldo INTEGER DEFAULT 3000000)");
 
         db.execSQL("CREATE TABLE tarjetas (" + "id INTEGER PRIMARY KEY AUTOINCREMENT, " + "nombre TEXT, " + "exp TEXT, " + "cv TEXT, " + "bank TEXT, " + "monto INTEGER, " + "user_email TEXT, " + "FOREIGN KEY(user_email) REFERENCES usuarios(email))");
 
@@ -119,9 +119,18 @@ public class SQLite extends SQLiteOpenHelper {
 
 
 
-    public Cursor obtenerSaldoPorTelefono(String telefono) {
+    public int obtenerSaldoPorTelefono(String telefono) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT saldo FROM usuarios WHERE telefono = ?", new String[]{telefono});
+        Cursor cursor = db.rawQuery("SELECT saldo FROM usuarios WHERE telefono = ?", new String[]{telefono});
+
+        int saldo = -1; // Valor por defecto si hay error
+        if (cursor.moveToFirst()) {
+            saldo = cursor.getInt(0);
+        }
+        cursor.close();
+        db.close();
+
+        return saldo > 0 ? saldo : 0;
     }
 
 
@@ -179,5 +188,14 @@ public class SQLite extends SQLiteOpenHelper {
         long result = db.insert("historial", null, values);
         db.close();
         return result != -1;
+    }
+
+    public void registrarTransaccion(String sistema, String userPhone, int montoRedondeado) {
+   
+    }
+
+    public boolean actualizarSaldo(String userPhone, int montoRedondeado) {
+
+        return false;
     }
 }

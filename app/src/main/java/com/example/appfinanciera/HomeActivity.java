@@ -6,10 +6,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,15 +19,13 @@ import java.util.List;
 public class HomeActivity extends AppCompatActivity {
 
     private TextView tvUserName, tvBalance;
-    private Button btnEnviarDinero, btnCambiarDivisa;
+    private Button btnEnviarDinero,btnRecibirDinero, btnCambiarDivisa;
     private RecyclerView recyclerViewTransactions;
     private TransactionAdapter adapter;
     private SQLite databaseHelper;
     private SharedPreferences sharedPreferences;
     private String userPhone;
     private String userName;
-    private long balance = 3000000;
-
     private int pesoToYen = 2;
     private int yenToEuro = 2;
     private String currentCurrency = "$";
@@ -37,13 +35,16 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         tvUserName = findViewById(R.id.tvUserName);
         tvBalance = findViewById(R.id.tvBalance);
         btnEnviarDinero = findViewById(R.id.btnEnviarDinero);
+        btnRecibirDinero = findViewById(R.id.btnRecibirDinero);
         btnCambiarDivisa = findViewById(R.id.btnCambiarDivisa);
         recyclerViewTransactions = findViewById(R.id.recyclerViewTransactions);
+
 
         // Inicialización de BD y SharedPreferences
         databaseHelper = new SQLite(this);
@@ -78,18 +79,22 @@ public class HomeActivity extends AppCompatActivity {
         if (userName != null && !userName.isEmpty()) {
             tvUserName.setText(userName);
 
-            // Configurar el título de la Toolbar con el mensaje de bienvenida
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setTitle("BIENVENIDO:  " + userName);
             }
         }
 
-        actualizarSaldo();
-        cargarHistorial();
+
 
         btnEnviarDinero.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, CashActivity.class);
             startActivity(intent);
+        });
+
+        btnRecibirDinero.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this,RecibirDineroActivity.class);
+            startActivity(intent);
+
         });
 
         btnCambiarDivisa.setOnClickListener(v -> cambiarDivisa());
@@ -98,7 +103,7 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflar el menú de opciones
+        // menú de opciones
         getMenuInflater().inflate(R.menu.menu_home, menu);
         return true;
     }
@@ -120,7 +125,7 @@ public class HomeActivity extends AppCompatActivity {
             Intent intent = new Intent(HomeActivity.this, LoginActivity2.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
-            finish();
+           // finish();
             return true;
         }
 
@@ -129,7 +134,10 @@ public class HomeActivity extends AppCompatActivity {
 
 
     private void actualizarSaldo() {
+        long balance = databaseHelper.obtenerSaldoPorTelefono(userPhone);
+
         long saldoConvertido = convertirSaldo(balance);
+
         tvBalance.setText(currentCurrency + " " + String.format("%,d", saldoConvertido));
     }
 
@@ -149,6 +157,7 @@ public class HomeActivity extends AppCompatActivity {
             currentCurrency = "¥";
         } else if (currentCurrency.equals("¥")) {
             currentCurrency = "€";
+
         } else {
             currentCurrency = "$";
         }
@@ -160,5 +169,19 @@ public class HomeActivity extends AppCompatActivity {
         adapter = new TransactionAdapter(transactionList, userPhone);
         recyclerViewTransactions.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewTransactions.setAdapter(adapter);
+
+        // Add animation
+        recyclerViewTransactions.setItemAnimator(new androidx.recyclerview.widget.DefaultItemAnimator());
+        recyclerViewTransactions.addItemDecoration(new androidx.recyclerview.widget.DividerItemDecoration(
+                this, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL));
+
+
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        actualizarSaldo();
+        cargarHistorial();
     }
 }
+

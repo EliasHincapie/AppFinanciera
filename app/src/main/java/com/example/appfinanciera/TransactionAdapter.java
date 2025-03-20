@@ -33,13 +33,31 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         ListHistory transaction = transactions.get(position);
 
         boolean esEnviado = transaction.getOrigen().equals(userPhone);
-        holder.tvMonto.setText((esEnviado ? "- " : "+ ") + "$ " + transaction.getMonto());
-        holder.tvFecha.setText(transaction.getFecha());
+        String otherParty = esEnviado ? transaction.getDestino() : transaction.getOrigen();
 
+        holder.tvMonto.setText((esEnviado ? "- " : "+ ") + "$ " + transaction.getMonto());
+
+        String formattedDate;
+        try{
+            long timestamp = Long.parseLong(transaction.getFecha());
+            java.text.SimpleDateFormat sdf = new  java.text.SimpleDateFormat("dd/MM/yyyy HH:mm");
+            formattedDate = sdf.format(new java.util.Date(timestamp));
+
+        }catch (NumberFormatException e ){
+            formattedDate = transaction.getFecha();
+        }
+        holder.tvFecha.setText(formattedDate);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+
+
+                );
         // Alinear el diseño tipo chat
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.itemView.getLayoutParams();
+
         params.gravity = esEnviado ? Gravity.END : Gravity.START;
         holder.itemView.setLayoutParams(params);
+        holder.container.setBackgroundResource(esEnviado ? R.drawable.sent_message_bg : R.drawable.received_message_bg);
 
         holder.tvMonto.setTextColor(esEnviado ? Color.RED : Color.GREEN);
     }
@@ -51,9 +69,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvMonto, tvFecha;
-
+        LinearLayout container;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            container = itemView.findViewById(R.id.container);
             tvMonto = itemView.findViewById(R.id.tvMonto);
             tvFecha = itemView.findViewById(R.id.tvFecha);
         }

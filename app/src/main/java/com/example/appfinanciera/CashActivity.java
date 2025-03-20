@@ -16,6 +16,7 @@ public class CashActivity extends AppCompatActivity {
     String userPhone;
     int balance;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,24 +27,40 @@ public class CashActivity extends AppCompatActivity {
         btnSend = findViewById(R.id.btnSend);
         databaseHelper = new SQLite(this);
 
-        userPhone = getSharedPreferences("UserSession", MODE_PRIVATE).getString("phone", "");
+        userPhone = getSharedPreferences("UserSession", MODE_PRIVATE).getString("userPhone", "");
+        balance = databaseHelper.obtenerSaldoPorTelefono(userPhone);
 
-        // Obtener el saldo actual del usuario
-        balance = obtenerSaldo(userPhone);
+        configurarBotonEnviar();
 
-        btnSend.setOnClickListener(v -> enviarDinero());
     }
 
-    private void enviarDinero() {
+
+
+    private void configurarBotonEnviar() {
+        btnSend.setOnClickListener(v -> {
+
         String phoneDestino = etPhone.getText().toString().trim();
         String amountStr = etAmount.getText().toString().trim();
 
         if (phoneDestino.isEmpty() || amountStr.isEmpty()) {
             Toast.makeText(this, "Ingrese todos los datos", Toast.LENGTH_SHORT).show();
             return;
-        }
 
-        int amount = Integer.parseInt(amountStr);
+        }
+            if (phoneDestino.equals(userPhone)) {
+                Toast.makeText(this, "No puedes enviarte dinero a ti mismo", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            int amount;
+            try {
+                amount = Integer.parseInt(amountStr);
+            } catch (NumberFormatException e) {
+                Toast.makeText(this, "Ingrese un monto válido", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+
         int amountRounded = redondearMonto(amount);
 
         if (amountRounded <= 0) {
@@ -70,13 +87,14 @@ public class CashActivity extends AppCompatActivity {
 
         Toast.makeText(this, "Transacción exitosa", Toast.LENGTH_SHORT).show();
         finish();
-    }
+    });
 
+    }
     private int redondearMonto(int monto) {
         return (monto / 100) * 100;
     }
 
-    private int obtenerSaldo(String phone) {
+    private int obtenerSaldoPorTelefono(String phone) {
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT saldo FROM usuarios WHERE telefono=?", new String[]{phone});
         int saldo = 0;
@@ -85,7 +103,11 @@ public class CashActivity extends AppCompatActivity {
         }
         cursor.close();
         db.close();
-        return saldo;
+        if (saldo == -1) {
+            Toast.makeText(this, "Error al obtener saldo", Toast.LENGTH_SHORT).show();
+        }
+        return saldo > 0 ? saldo : 0; // Asegura que el saldo nunca sea negativo
+
     }
 
     private boolean usuarioExiste(String phone) {
@@ -97,11 +119,21 @@ public class CashActivity extends AppCompatActivity {
         return exists;
     }
 
-    private void actualizarSaldo(String phone, int monto) {
+    public boolean actualizarSaldo(String phone, int monto) {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+        int saldoActual = obtenerSaldoPorTelefono(phone);
+        if (saldoActual + monto < 0) {
+            return false; // Evita saldo negativo
+        }
+
         db.execSQL("UPDATE usuarios SET saldo = saldo + ? WHERE telefono=?", new Object[]{monto, phone});
         db.close();
-    }
+        return true;
+
+
+
+}
 
     private void registrarTransaccion(String origen, String destino, int monto) {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
@@ -114,6 +146,7 @@ public class CashActivity extends AppCompatActivity {
         db.insert("historial", null, values);
         db.close();
     }
+
 
 
 }

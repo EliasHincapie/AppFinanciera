@@ -68,13 +68,12 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:backgroundTint="#A89F03"
-            android:onClick="send"
             android:padding="10dp"
             android:text="Send"
             android:textColor="@android:color/white" />
 
         <Button
-            android:id="@+id/btnRecibirDivisa"
+            android:id="@+id/btnRecibirDinero"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Receive"

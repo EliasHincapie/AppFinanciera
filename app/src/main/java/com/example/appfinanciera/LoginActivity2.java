@@ -38,11 +38,6 @@ public class LoginActivity2 extends AppCompatActivity {
         databaseHelper = new SQLite(this);
         sharedPreferences = getSharedPreferences("UserSession", Context.MODE_PRIVATE);
 
-        //SharedPreferences.Editor editor = sharedPreferences.edit();
-        //editor.putString("userPhone", telefonoIngresado);  // Guardar el número de teléfono
-
-        //editor.putBoolean("isLoggedIn", true);
-        //editor.apply();
         checkSession();
 
         btnLogin.setOnClickListener(v -> loginUser());

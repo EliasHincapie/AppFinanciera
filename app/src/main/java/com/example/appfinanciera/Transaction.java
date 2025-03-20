@@ -1,6 +1,6 @@
 package com.example.appfinanciera;
 
-    public class Transaction {
+public class Transaction {
         private String origen;
         private String destino;
         private int monto;
