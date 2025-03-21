@@ -4,16 +4,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:gravity="center_horizontal">
+    android:gravity="center"
+    android:background="#FAFAFA">
 
     <TextView
         android:id="@+id/tvBalance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Saldo: $3,000,000"
+        android:text="Enviar Dinero"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:paddingBottom="16dp"/>
+        android:paddingBottom="16dp"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="16dp"/>
 
     <EditText
         android:id="@+id/etPhone"
@@ -21,7 +24,8 @@
         android:layout_height="wrap_content"
         android:hint="Número de celular"
         android:inputType="phone"
-        android:padding="10dp"
+        android:padding="12dp"
+        android:textSize="16sp"
         android:background="@android:drawable/editbox_background"/>
 
     <EditText
@@ -39,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Enviar Dinero"
-        android:backgroundTint="#A89F03"
+        android:backgroundTint="#00796B"
         android:textColor="@android:color/white"
         android:layout_marginTop="16dp"/>
 </LinearLayout>

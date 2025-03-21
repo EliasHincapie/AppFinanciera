@@ -32,6 +32,7 @@ public class CashActivity extends AppCompatActivity {
 
         configurarBotonEnviar();
 
+
     }
 
 
@@ -91,7 +92,7 @@ public class CashActivity extends AppCompatActivity {
 
     }
     private int redondearMonto(int monto) {
-        return (monto / 100) * 100;
+        return Math.round(monto / 100.0f) * 100;
     }
 
     private int obtenerSaldoPorTelefono(String phone) {
