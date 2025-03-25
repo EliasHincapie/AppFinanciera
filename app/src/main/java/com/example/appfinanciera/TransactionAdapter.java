@@ -90,9 +90,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         String otherPartyPhone = esEnviado ? transaction.getDestino() : transaction.getOrigen();
         String otherPartyName = databaseHelper.obtenerNombrePorTelefono(otherPartyPhone);
 
-        String details = "Transacción #" + transactionNumber + "\n\n" +
+        String details =
+                "Transacción #" + transactionNumber + "\n\n" +
                 (esEnviado ? "Envío a: " : "Recibido de: ") + otherPartyName + "\n" +
-                "Número: " + otherPartyPhone + "\n" +
+                "Numero: " + otherPartyPhone + "\n" +
                 "Monto: $ " + String.format("%,d", transaction.getMonto()) + "\n" +
                 "Fecha: " + transaction.getFecha();
 

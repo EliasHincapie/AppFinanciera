@@ -59,7 +59,6 @@
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
         android:background="@drawable/edit_text_border"
-        android:drawableEnd="@drawable/ojoabierto"
         android:drawablePadding="5dp"
         android:hint="Password"
         android:inputType="textPassword"

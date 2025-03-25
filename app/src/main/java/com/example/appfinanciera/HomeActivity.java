@@ -13,7 +13,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -155,6 +158,9 @@ public class HomeActivity extends AppCompatActivity {
         actualizarSaldo();
     }
 
+
+
+
     private void cargarHistorial() {
         Log.d("DB_DEBUG", "🔄 Recargando historial...");
         transactionList.clear(); // Limpiar la lista antes de actualizarla
@@ -169,15 +175,15 @@ public class HomeActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
 
     }
-        @Override
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-            Log.d("DEBUG", "onActivityResult llamado con requestCode: " + requestCode + ", resultCode: " + resultCode);
+        Log.d("DEBUG", "onActivityResult llamado con requestCode: " + requestCode + ", resultCode: " + resultCode);
 
-            if ((requestCode == 1 || requestCode == 2) && resultCode == RESULT_OK) {
-                Log.d("DEBUG", "Actualizando saldo y cargando historial...");
+        if ((requestCode == 1 || requestCode == 2) && resultCode == RESULT_OK) {
+            Log.d("DEBUG", "Actualizando saldo y cargando historial...");
 
-                actualizarSaldo();
+            actualizarSaldo();
             cargarHistorial();
         }
     }

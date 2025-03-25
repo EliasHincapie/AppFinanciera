@@ -20,6 +20,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 5;
     private static DatabaseHelper instance;
 
+    private static int PESO_A_YEN = 2;  // 1 Peso = 2 Yenes
+    private static int YEN_A_EURO = 2;  // 1 Yen = 2 Euros
+
+
+
     private SQLiteDatabase db;
 
     private DatabaseHelper(@Nullable Context context) {
@@ -62,6 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS historial");
         onCreate(db);
     }
+
     // Insertar usuario
     public boolean insertarUsuario(String email, String name, long telefono, long cedula, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -71,12 +77,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put("telefono", telefono);
         values.put("cc", cedula);
         values.put("password", password);
-        values.put("saldo", 3000000);
+        values.put("saldo", 3000000 );
 
         long result = db.insert("usuarios", null, values);
         db.close();
         return result != -1;
     }
+
 
     // Verificar existencia de email o cédula
     public boolean verificarDatos(String email, long cedula) {
@@ -89,6 +96,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return exists;
     }
 
+
     // Verificar usuario y contraseña
     public boolean verificarUsuario(String telefono, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -100,6 +108,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return exists;
     }
 
+
     public int obtenerSaldoPorTelefono(String telefono) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT saldo FROM usuarios WHERE telefono = ?", new String[]{telefono});
@@ -108,22 +117,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return saldo;
     }
 
-    public boolean actualizarSaldo(String telefono, int monto) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        int saldoActual = obtenerSaldoPorTelefono(telefono); // Llama al metodo sin pasar la BD
 
-        if (saldoActual + monto < 0) {
+    public boolean actualizarSaldo(String phone, int monto) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT saldo FROM usuarios WHERE telefono = ?", new String[]{phone});
+
+        if (cursor.moveToFirst()) {
+            int saldoActual = cursor.getInt(0);
+            int nuevoSaldo = saldoActual + monto;
+
+            ContentValues values = new ContentValues();
+            values.put("saldo", nuevoSaldo);
+
+            int filasAfectadas = db.update("usuarios", values, "telefono = ?", new String[]{phone});
+            cursor.close();
             db.close();
-            return false; // Evita saldo negativo
+
+            return filasAfectadas > 0;
         }
 
-        ContentValues values = new ContentValues();
-        values.put("saldo", saldoActual + monto);
-        int filasAfectadas = db.update("usuarios", values, "telefono=?", new String[]{telefono});
-
-        db.close(); // Cerramos la BD después de la operación
-        return filasAfectadas > 0;
+        cursor.close();
+        db.close();
+        return false;
     }
+
+
+
+
 
     // Registrar transacción sin cerrar la BD
     public boolean registrarTransaccion(String origen, String destino, int monto) {
@@ -143,7 +163,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return resultado != -1;
     }
 
-    // Obtener email sin cerrar la BD
+
+
+
+    // Obtener el símbolo de la moneda actual
+    public static String obtenerSimboloMoneda(String moneda) {
+        switch (moneda.toUpperCase()) {
+            case "PESO":
+                return "$";
+            case "YEN":
+                return "¥";
+            case "EURO":
+                return "€";
+            default:
+                return "?";
+        }
+    }
+
+
+
+        // Obtener email sin cerrar la BD
     public String obtenerEmailPorTelefono(String telefono) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT email FROM usuarios WHERE telefono=?", new String[]{telefono});
@@ -152,6 +191,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return email;
     }
+
+
 
     // Obtener historial de transacciones
     public List<ListHistory> obtenerHistorial(String userPhone) {
@@ -187,6 +228,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return exists;
     }
+
+
+
+
     public String obtenerNombrePorTelefono(String telefono) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT name FROM usuarios WHERE telefono = ?", new String[]{telefono});

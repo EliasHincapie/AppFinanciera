@@ -3,14 +3,14 @@ package com.example.appfinanciera;
 public class Transaction {
     private String origen;
     private String destino;
-    private int monto;
+    private double monto;
     private String fecha;
 
 
     public Transaction() {
     }
 
-    public Transaction(String origen, String destino, int monto, String fecha) {
+    public Transaction(String origen, String destino, double monto, String fecha) {
         this.origen = origen;
         this.destino = destino;
         this.monto = monto;
@@ -24,7 +24,7 @@ public class Transaction {
         return destino;
     }
 
-    public int getMonto() {
+    public double getMonto() {
         return monto;
     }
 
@@ -49,11 +49,27 @@ public class Transaction {
         this.fecha = fecha;
     }
 
-    // MEtodo para verificar si la transacción fue enviada (en lugar de recibida)
+    // Metodo para verificar si la transacción fue enviada por el usuario
     public boolean isEnviado(String userPhone) {
         return userPhone != null && userPhone.equals(origen);
     }
 
+    // Metodo para verificar si la transacción fue recibida por el usuario
+    public boolean isRecibido(String userPhone) {
+        return userPhone != null && userPhone.equals(destino);
+    }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "origen='" + origen + '\'' +
+                ", destino='" + destino + '\'' +
+                ", monto=" + monto +
+                ", fecha='" + fecha + '\'' +
+                '}';
+    }
 }
+
+
 
 

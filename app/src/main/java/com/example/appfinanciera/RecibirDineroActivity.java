@@ -22,7 +22,9 @@ public class RecibirDineroActivity extends AppCompatActivity {
         btnConfirmarRecibo = findViewById(R.id.btnConfirmarRecibo);
         databaseHelper = DatabaseHelper.getInstance(this);
 
-        userPhone = getSharedPreferences("UserSession", MODE_PRIVATE).getString("userPhone", "");
+        // Obtener el número de teléfono del usuario actual
+        SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
+        userPhone = prefs.getString("userPhone", "");
 
         btnConfirmarRecibo.setOnClickListener(v -> confirmarRecibo());
     }
@@ -50,13 +52,16 @@ public class RecibirDineroActivity extends AppCompatActivity {
             return;
         }
 
-        // Actualizar el saldo del usuario
+        // Actualizar el saldo del usuario receptor
         boolean actualizado = databaseHelper.actualizarSaldo(userPhone, montoRedondeado);
 
         if (actualizado) {
-            // Registrar en el historial como una recepción
-            databaseHelper.registrarTransaccion("USUARIO", userPhone, montoRedondeado);
+            // Registrar en el historial como recepción
+            databaseHelper.registrarTransaccion("DEPOSITO", userPhone, montoRedondeado);
+
             Toast.makeText(this, "Recepción exitosa de $" + montoRedondeado, Toast.LENGTH_SHORT).show();
+
+            setResult(RESULT_OK);  // Notificar a HomeActivity
             finish();
         } else {
             Toast.makeText(this, "Error al procesar la recepción", Toast.LENGTH_SHORT).show();
@@ -64,6 +69,6 @@ public class RecibirDineroActivity extends AppCompatActivity {
     }
 
     private int redondearMonto(int monto) {
-        return (monto / 100) * 100;
+        return (int) (Math.round(monto / 100.0) * 100);
     }
 }

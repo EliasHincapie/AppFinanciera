@@ -111,9 +111,11 @@ public class     CashActivity extends AppCompatActivity {
         values.put("tarjeta_destino", destino);
         values.put("monto_enviado", monto);
 
+
         // Agregar el email del usuario que realiza la transacción
         String userEmail = databaseHelper.obtenerEmailPorTelefono(origen);
         values.put("user_email", userEmail);
+
 
         // Formato de fecha legible
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy  HH:mm:ss", Locale.getDefault());
