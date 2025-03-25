@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -20,7 +21,7 @@ public class HomeActivity extends AppCompatActivity {
     private Button btnEnviarDinero, btnRecibirDinero, btnCambiarDivisa;
     private RecyclerView recyclerViewTransactions;
     private TransactionAdapter adapter;
-    private SQLite databaseHelper;
+    private DatabaseHelper databaseHelper;
     private SharedPreferences sharedPreferences;
     private String userPhone;
     private String userName;
@@ -44,7 +45,7 @@ public class HomeActivity extends AppCompatActivity {
         recyclerViewTransactions = findViewById(R.id.recyclerViewTransactions);
 
         // Inicialización de BD y SharedPreferences
-        databaseHelper = new SQLite(this);
+        databaseHelper = DatabaseHelper.getInstance(this);
         sharedPreferences = getSharedPreferences("UserSession", Context.MODE_PRIVATE);
 
         // Obtener el teléfono del usuario desde las preferencias compartidas
@@ -70,7 +71,6 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
 
-        // Configurar el nombre del usuario en el TextView y en la Toolbar
         if (userName != null && !userName.isEmpty()) {
             tvUserName.setText(userName);
             if (getSupportActionBar() != null) {
@@ -156,16 +156,28 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void cargarHistorial() {
-        transactionList.clear();
+        Log.d("DB_DEBUG", "🔄 Recargando historial...");
+        transactionList.clear(); // Limpiar la lista antes de actualizarla
         transactionList.addAll(databaseHelper.obtenerHistorial(userPhone));
-        adapter.notifyDataSetChanged();
-    }
 
-    @Override
+        if (transactionList.isEmpty()) {
+            Log.d("DB_DEBUG", "⚠️ No hay transacciones para mostrar.");
+        } else {
+            Log.d("DB_DEBUG", "📜 Se cargaron " + transactionList.size() + " transacciones.");
+        }
+
+        adapter.notifyDataSetChanged();
+
+    }
+        @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if ((requestCode == 1 || requestCode == 2) && resultCode == RESULT_OK) {
-            actualizarSaldo();
+            Log.d("DEBUG", "onActivityResult llamado con requestCode: " + requestCode + ", resultCode: " + resultCode);
+
+            if ((requestCode == 1 || requestCode == 2) && resultCode == RESULT_OK) {
+                Log.d("DEBUG", "Actualizando saldo y cargando historial...");
+
+                actualizarSaldo();
             cargarHistorial();
         }
     }

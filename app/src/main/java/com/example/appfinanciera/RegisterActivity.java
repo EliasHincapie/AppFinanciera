@@ -14,7 +14,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText etName, etEmail, etPhone, etCedula, etPassword, etConfirmPassword;
     private Button registerButton;
     private TextView nextLogin;
-    SQLite databaseHelper;
+    private DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +30,7 @@ public class RegisterActivity extends AppCompatActivity {
         registerButton = findViewById(R.id.btn_Button_Register);
         nextLogin = findViewById(R.id.tv_login);
 
-        databaseHelper = new SQLite(this);
+        databaseHelper = DatabaseHelper.getInstance(this);
 
         registerButton.setOnClickListener(v -> registerUser());
 
@@ -87,15 +87,11 @@ public class RegisterActivity extends AppCompatActivity {
             long intTelefono = Long.parseLong(telefono);
             long intCedula = Long.parseLong(cedula);
 
-            if (databaseHelper.verificarEmail(email)) {
-                Toast.makeText(this, "Este correo ya está registrado", Toast.LENGTH_LONG).show();
+            if (databaseHelper.verificarDatos(email,intCedula)) {
+                Toast.makeText(this, "Este correo o cedula ya está registrado", Toast.LENGTH_LONG).show();
                 return;
             }
 
-            if (databaseHelper.verificarCedula(intCedula)) {
-                Toast.makeText(this, "Esta cédula ya está registrada", Toast.LENGTH_LONG).show();
-                return;
-            }
 
             boolean insert = databaseHelper.insertarUsuario(email, name, intTelefono, intCedula, password);
             if (insert) {

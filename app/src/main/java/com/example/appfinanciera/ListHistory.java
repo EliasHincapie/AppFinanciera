@@ -4,17 +4,25 @@ package com.example.appfinanciera;
 import java.io.Serializable;
 
 public class ListHistory implements Serializable {
+    private int id;
+
     private int monto;
+
+
     private String fecha;
     private String destino;
     private String origen;
 
-    public ListHistory(int monto, String fecha, String destino, String origen) {
+    public ListHistory( int id,int monto, String fecha, String destino, String origen) {
         this.monto = monto;
         this.fecha = fecha;
         this.destino = destino;
         this.origen = origen;
     }
+    public int getId() {
+        return id;
+    }
+
 
     public int getMonto() {
         return monto;

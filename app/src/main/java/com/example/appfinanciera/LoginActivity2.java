@@ -16,12 +16,10 @@ public class LoginActivity2 extends AppCompatActivity {
     private EditText etPhone, etPassword;
     private Button btnLogin;
     private TextView tvRegister;
-    SQLite databaseHelper;
+    private DatabaseHelper databaseHelper;
     SharedPreferences sharedPreferences;
     private ImageView ojo_password;
     private boolean isPasswordVisible = false;
-
-
 
 
     @Override
@@ -35,7 +33,7 @@ public class LoginActivity2 extends AppCompatActivity {
         tvRegister = findViewById(R.id.tv_registrar);
         ojo_password = findViewById(R.id.ojo_password);
 
-        databaseHelper = new SQLite(this);
+        databaseHelper =  DatabaseHelper.getInstance(this);
         sharedPreferences = getSharedPreferences("UserSession", Context.MODE_PRIVATE);
 
         checkSession();
@@ -70,7 +68,7 @@ public class LoginActivity2 extends AppCompatActivity {
         }
 
         if (databaseHelper.verificarUsuario(phone, password)) {
-            String userName = databaseHelper.obtenerNombreUsuario(phone);
+            String userName = databaseHelper.obtenerNombrePorTelefono(phone);
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("userPhone", phone);

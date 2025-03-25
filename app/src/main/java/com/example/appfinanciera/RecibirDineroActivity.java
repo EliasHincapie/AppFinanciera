@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class RecibirDineroActivity extends AppCompatActivity {
     private EditText etMontoRecibido;
     private Button btnConfirmarRecibo;
-    SQLite databaseHelper;
+    private DatabaseHelper databaseHelper;
     private String userPhone;
 
     @Override
@@ -20,7 +20,7 @@ public class RecibirDineroActivity extends AppCompatActivity {
 
         etMontoRecibido = findViewById(R.id.etMontoRecibido);
         btnConfirmarRecibo = findViewById(R.id.btnConfirmarRecibo);
-        databaseHelper = new SQLite(this);
+        databaseHelper = DatabaseHelper.getInstance(this);
 
         userPhone = getSharedPreferences("UserSession", MODE_PRIVATE).getString("userPhone", "");
 
@@ -55,7 +55,7 @@ public class RecibirDineroActivity extends AppCompatActivity {
 
         if (actualizado) {
             // Registrar en el historial como una recepción
-            databaseHelper.registrarTransaccion("SISTEMA", userPhone, montoRedondeado);
+            databaseHelper.registrarTransaccion("USUARIO", userPhone, montoRedondeado);
             Toast.makeText(this, "Recepción exitosa de $" + montoRedondeado, Toast.LENGTH_SHORT).show();
             finish();
         } else {
